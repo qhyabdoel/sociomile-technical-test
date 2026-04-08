@@ -8,7 +8,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func ConnectDB() (*sql.DB, error) {
+func InitDB() (*sql.DB, error) {
 	dsn := fmt.Sprintf(
 		"%s:%s@tcp(%s:%s)/%s?parsetime=true",
 		os.Getenv("DB_USER"),
