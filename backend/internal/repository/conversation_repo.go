@@ -11,6 +11,7 @@ type ConversationRepository interface {
 	FindByExternalID(ctx context.Context, tenantID int, externalID string) (*model.Conversation, error)
 	Create(ctx context.Context, conv *model.Conversation) error
 	GetByID(ctx context.Context, tenantID int, id int) (*model.Conversation, error)
+	GetConversationsByTenant(ctx context.Context, tenantID string) ([]model.Conversation, error)
 }
 
 type conversationRepo struct {
@@ -22,6 +23,38 @@ func NewConversationRepository(db *sql.DB) ConversationRepository {
 	return &conversationRepo{db: db}
 }
 
+func (r *conversationRepo) GetConversationsByTenant(ctx context.Context, tenantID string) ([]model.Conversation, error) {
+	query := `
+		SELECT id, tenant_id, customer_external_id, status, assigned_agent_id, created_at 
+		FROM conversations 
+		WHERE tenant_id = ?`
+
+	rows, err := r.db.QueryContext(ctx, query, tenantID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var conversations []model.Conversation
+	for rows.Next() {
+		conv := model.Conversation{}
+		err := rows.Scan(
+			&conv.ID,
+			&conv.TenantID,
+			&conv.CustomerExternalID,
+			&conv.Status,
+			&conv.AssignedAgentID,
+			&conv.CreatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+		conversations = append(conversations, conv)
+	}
+
+	return conversations, nil
+}
+
 // find existing conversation by external ID
 func (r *conversationRepo) FindByExternalID(ctx context.Context, tenantID int, externalID string) (*model.Conversation, error) {
 	query := `
@@ -29,7 +62,7 @@ func (r *conversationRepo) FindByExternalID(ctx context.Context, tenantID int, e
 		FROM conversations 
 		WHERE tenant_id = ? AND customer_external_id = ? 
 		LIMIT 1`
-	
+
 	// this will hold the result of the query
 	conv := &model.Conversation{}
 
@@ -57,14 +90,14 @@ func (r *conversationRepo) Create(ctx context.Context, conv *model.Conversation)
 	query := `
 		INSERT INTO conversations (tenant_id, customer_external_id) 
 		VALUES (?, ?, ?)`
-	
+
 	// execute the insert query
-	_, err := r.db.ExecContext(ctx, query, 
+	_, err := r.db.ExecContext(ctx, query,
 		conv.TenantID,
-		conv.CustomerExternalID, 
+		conv.CustomerExternalID,
 		conv.Status,
 	)
-	
+
 	return err
 }
 
@@ -73,7 +106,7 @@ func (r *conversationRepo) GetByID(ctx context.Context, tenantID int, id int) (*
 		SELECT id, tenant_id, customer_external_id, status, assigned_agent_id, created_at 
 		FROM conversations 
 		WHERE tenant_id = ? AND id = ?`
-	
+
 	conv := &model.Conversation{}
 
 	err := r.db.QueryRowContext(ctx, query, tenantID, id).Scan(
