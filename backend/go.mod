@@ -1,4 +1,4 @@
-module github.com/qhyabdoel/sociomile-technical-test
+module github.com/qhyabdoel/sociomile-technical-test/backend
 
 go 1.25.5
 
