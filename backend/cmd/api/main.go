@@ -34,9 +34,10 @@ func main() {
 	convRepo := repository.NewConversationRepository(db)
 	msgRepo := repository.NewMessageRepository(db)
 	ticketRepo := repository.NewTicketRepository(db)
+	tenantRepo := repository.NewTenantRepository(db)
 
 	// init services
-	convService := service.NewConversationService(convRepo, msgRepo)
+	convService := service.NewConversationService(convRepo, msgRepo, tenantRepo)
 	ticketService := service.NewTicketService(ticketRepo, convRepo)
 
 	// init handlers

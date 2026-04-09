@@ -11,13 +11,20 @@ import (
 type ConversationService struct {
 	repo        repository.ConversationRepository
 	messageRepo repository.MessageRepository
+	tenantRepo  repository.TenantRepository
 }
 
-func NewConversationService(repo repository.ConversationRepository, msgRepo repository.MessageRepository) *ConversationService {
-	return &ConversationService{repo: repo, messageRepo: msgRepo}
+func NewConversationService(repo repository.ConversationRepository, msgRepo repository.MessageRepository, tenantRepo repository.TenantRepository) *ConversationService {
+	return &ConversationService{repo: repo, messageRepo: msgRepo, tenantRepo: tenantRepo}
 }
 
 func (s *ConversationService) ProcessIncomingMessage(ctx context.Context, tenantID int64, externalID, message string) error {
+	// check tenant exist or not
+	_, err := s.tenantRepo.GetByID(ctx, tenantID)
+	if err != nil {
+		return errors.New("tenant not found")
+	}
+
 	// get existing conversation
 	conv, err := s.repo.FindByExternalID(ctx, tenantID, externalID)
 	if err != nil {

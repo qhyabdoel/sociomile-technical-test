@@ -89,7 +89,7 @@ func (r *conversationRepo) FindByExternalID(ctx context.Context, tenantID int64,
 
 func (r *conversationRepo) Create(ctx context.Context, conv *model.Conversation) error {
 	query := `
-		INSERT INTO conversations (tenant_id, customer_external_id) 
+		INSERT INTO conversations (tenant_id, customer_external_id, status) 
 		VALUES (?, ?, ?)`
 
 	// execute the insert query

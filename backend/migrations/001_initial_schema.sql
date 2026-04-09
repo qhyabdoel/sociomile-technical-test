@@ -2,8 +2,8 @@
 CREATE TABLE IF NOT EXISTS tenants (
     id BiGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
 -- create users if not exist
 CREATE TABLE IF NOT EXISTS users (
@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (tenant_id) REFERENCES tenants(id),
     INDEX idx_tenant_id (tenant_id)
-)
+);
 
 -- create conversations if not exist
 CREATE TABLE IF NOT EXISTS conversations (
@@ -28,8 +28,8 @@ CREATE TABLE IF NOT EXISTS conversations (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (tenant_id) REFERENCES tenants(id),
-    FOREIGN KEY (assigned_agent_id) REFERENCES users(id),
-)
+    FOREIGN KEY (assigned_agent_id) REFERENCES users(id)
+);
 
 -- create messages if not exist
 CREATE TABLE IF NOT EXISTS messages (
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS messages (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (conversation_id) REFERENCES conversations(id),
     INDEX idx_conversation_id (conversation_id)
-)
+);
 
 -- create tickets if not exist
 CREATE TABLE IF NOT EXISTS tickets (
@@ -57,4 +57,4 @@ CREATE TABLE IF NOT EXISTS tickets (
     FOREIGN KEY (conversation_id) REFERENCES conversations(id),
     FOREIGN KEY (assigned_agent_id) REFERENCES users(id),
     INDEX idx_tenant_id (tenant_id)
-)
+);

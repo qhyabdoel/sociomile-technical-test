@@ -14,7 +14,6 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
-      # Opsional: Auto-run skema tabel saat startup
       - ./backend/migrations:/docker-entrypoint-initdb.d
 
   backend:
