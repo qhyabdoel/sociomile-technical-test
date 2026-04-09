@@ -18,28 +18,6 @@ The easiest way to run the entire application (Database, Backend, and Frontend) 
 
 ---
 
-## 🛠 Running Locally (Development)
-
-If you prefer to run the components individually:
-
-### 1. Database
-Ensure MySQL is running on port `3306` with the credentials found in `backend/internal/config/db.go` or `docker-compose.yml`. Use `backend/migrations/init.sql` to seed the database.
-
-### 2. Backend (Go)
-```bash
-cd backend
-go run cmd/api/main.go
-```
-
-### 3. Frontend (React)
-```bash
-cd frontend
-npm install
-npm run dev
-```
-The frontend will be available at [http://localhost:3000](http://localhost:3000).
-
----
 
 ## 🔑 Default Credentials (Seeded)
 
@@ -49,3 +27,7 @@ The frontend will be available at [http://localhost:3000](http://localhost:3000)
 - **Tenant 2 (Kiki Tech Solutions)**
   - Admin: `admin2@tech.com` / `password123`
   - Agent: `agent@tech.com` / `password123`
+
+## Not yet implemented
+
+- Unit test
