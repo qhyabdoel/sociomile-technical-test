@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/qhyabdoel/sociomile-technical-test/backend/internal/middleware"
@@ -36,7 +37,12 @@ func (h *ConversationHandler) HandleWebhook(w http.ResponseWriter, r *http.Reque
 }
 
 func (h *ConversationHandler) List(w http.ResponseWriter, r *http.Request) {
-	tenantID, _ := r.Context().Value(middleware.TenantIDKey).(string)
+	tenantIDStr, _ := r.Context().Value(middleware.TenantIDKey).(string)
+	tenantID, err := strconv.ParseInt(tenantIDStr, 10, 64)
+	if err != nil {
+		WriteError(w, http.StatusBadRequest, "Invalid tenant ID")
+		return
+	}
 
 	conversations, err := h.svc.GetConversationsByTenant(r.Context(), tenantID)
 	if err != nil {
@@ -49,8 +55,18 @@ func (h *ConversationHandler) List(w http.ResponseWriter, r *http.Request) {
 
 // reply used by agent to reply message
 func (h *ConversationHandler) Reply(w http.ResponseWriter, r *http.Request) {
-	convID := chi.URLParam(r, "id")
-	tenantID, _ := r.Context().Value(middleware.TenantIDKey).(string)
+	paramID := chi.URLParam(r, "id")
+	convID, err := strconv.ParseInt(paramID, 10, 64)
+	if err != nil {
+		WriteError(w, http.StatusBadRequest, "Invalid conversation ID")
+		return
+	}
+	tenantIDStr, _ := r.Context().Value(middleware.TenantIDKey).(string)
+	tenantID, err := strconv.ParseInt(tenantIDStr, 10, 64)
+	if err != nil {
+		WriteError(w, http.StatusBadRequest, "Invalid tenant ID")
+		return
+	}
 
 	var req struct {
 		Message string `json:"message"`
@@ -60,11 +76,38 @@ func (h *ConversationHandler) Reply(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := h.svc.AddAgentReply(r.Context(), tenantID, convID, req.Message)
+	err = h.svc.AddAgentReply(r.Context(), tenantID, convID, req.Message)
 	if err != nil {
 		WriteError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	WriteJSON(w, http.StatusCreated, "Reply sent")
+}
+
+func (h *ConversationHandler) GetDetail(w http.ResponseWriter, r *http.Request) {
+	// parse id from url
+	iDStr := chi.URLParam(r, "id")
+	convID, err := strconv.ParseInt(iDStr, 10, 64)
+	if err != nil {
+		WriteError(w, http.StatusBadRequest, "Invalid conversation ID")
+		return
+	}
+
+	// get tenant id from context
+	tenantIdStr, _ := r.Context().Value(middleware.TenantIDKey).(string)
+	tenantId, err := strconv.ParseInt(tenantIdStr, 10, 64)
+	if err != nil {
+		WriteError(w, http.StatusBadRequest, "Invalid tenant ID")
+		return
+	}
+
+	// get conversation by id
+	detail, err := h.svc.GetConversationByID(r.Context(), tenantId, convID)
+	if err != nil {
+		WriteError(w, http.StatusInternalServerError, "Failed to get conversation")
+		return
+	}
+
+	WriteJSON(w, http.StatusOK, detail)
 }

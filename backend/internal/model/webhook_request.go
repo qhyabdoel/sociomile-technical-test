@@ -1,7 +1,7 @@
 package model
 
 type WebhookRequest struct {
-	TenantID   string `json:"tenant_id"`
+	TenantID   int64  `json:"tenant_id"`
 	ExternalID string `json:"external_id"`
 	Message    string `json:"message"`
 }
