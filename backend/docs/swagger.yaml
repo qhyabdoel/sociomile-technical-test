@@ -1,6 +1,27 @@
 basePath: /
 definitions:
-  github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.Conversation:
+  handler.CreateTicketRequest:
+    properties:
+      conv_id:
+        type: integer
+      desc:
+        type: string
+      priority:
+        type: string
+      title:
+        type: string
+    type: object
+  handler.ReplyRequest:
+    properties:
+      message:
+        type: string
+    type: object
+  handler.UpdateTicketStatusRequest:
+    properties:
+      status:
+        type: string
+    type: object
+  model.Conversation:
     properties:
       assigned_agent_id:
         type: integer
@@ -17,14 +38,14 @@ definitions:
       updated_at:
         type: string
     type: object
-  github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.LoginRequest:
+  model.LoginRequest:
     properties:
       email:
         type: string
       password:
         type: string
     type: object
-  github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.WebhookRequest:
+  model.WebhookRequest:
     properties:
       external_id:
         type: string
@@ -32,11 +53,6 @@ definitions:
         type: string
       tenant_id:
         type: integer
-    type: object
-  internal_handler.ReplyRequest:
-    properties:
-      message:
-        type: string
     type: object
 host: localhost:8080
 info:
@@ -56,7 +72,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.WebhookRequest'
+          $ref: '#/definitions/model.WebhookRequest'
       produces:
       - application/json
       responses:
@@ -85,7 +101,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.Conversation'
+              $ref: '#/definitions/model.Conversation'
             type: array
         "500":
           description: Failed to get conversations
@@ -112,7 +128,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.Conversation'
+            $ref: '#/definitions/model.Conversation'
         "400":
           description: Invalid conversation ID
           schema:
@@ -143,7 +159,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/internal_handler.ReplyRequest'
+          $ref: '#/definitions/handler.ReplyRequest'
       produces:
       - application/json
       responses:
@@ -175,7 +191,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.LoginRequest'
+          $ref: '#/definitions/model.LoginRequest'
       produces:
       - application/json
       responses:
@@ -194,6 +210,75 @@ paths:
       summary: Login
       tags:
       - Auth
+  /tickets:
+    post:
+      consumes:
+      - application/json
+      description: Create ticket
+      parameters:
+      - description: Ticket request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CreateTicketRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Ticket created successfully
+          schema:
+            type: string
+        "400":
+          description: Invalid request body
+          schema:
+            type: string
+        "500":
+          description: Failed to create ticket
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Create ticket
+      tags:
+      - Ticket
+  /tickets/{id}/status:
+    patch:
+      consumes:
+      - application/json
+      description: Update ticket status
+      parameters:
+      - description: Ticket ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Ticket status
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handler.UpdateTicketStatusRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ticket status updated successfully
+          schema:
+            type: string
+        "400":
+          description: Invalid request body
+          schema:
+            type: string
+        "500":
+          description: Failed to update ticket status
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Update ticket status
+      tags:
+      - Ticket
 securityDefinitions:
   BearerAuth:
     in: header

@@ -46,9 +46,13 @@ func AuthMiddleware(jwtSecret string) func(http.Handler) http.Handler {
 			}
 
 			// Extract user information from claims
-			tenantID, _ := claims["tenant_id"].(string)
-			userID, _ := claims["user_id"].(string)
-			role, _ := claims["user_role"].(string)
+			tenantIDF, _ := claims["tenant_id"].(float64)
+			tenantID := int64(tenantIDF)
+
+			userIDF, _ := claims["user_id"].(float64)
+			userID := int64(userIDF)
+
+			role, _ := claims["role"].(string)
 
 			// Store user information in the request context
 			ctx := context.WithValue(r.Context(), TenantIDKey, tenantID)

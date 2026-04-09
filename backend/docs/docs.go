@@ -35,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.WebhookRequest"
+                            "$ref": "#/definitions/model.WebhookRequest"
                         }
                     }
                 ],
@@ -82,7 +82,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.Conversation"
+                                "$ref": "#/definitions/model.Conversation"
                             }
                         }
                     },
@@ -124,7 +124,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.Conversation"
+                            "$ref": "#/definitions/model.Conversation"
                         }
                     },
                     "400": {
@@ -175,7 +175,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/internal_handler.ReplyRequest"
+                            "$ref": "#/definitions/handler.ReplyRequest"
                         }
                     }
                 ],
@@ -221,7 +221,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.LoginRequest"
+                            "$ref": "#/definitions/model.LoginRequest"
                         }
                     }
                 ],
@@ -246,10 +246,152 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/tickets": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create ticket",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ticket"
+                ],
+                "summary": "Create ticket",
+                "parameters": [
+                    {
+                        "description": "Ticket request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.CreateTicketRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Ticket created successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to create ticket",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/tickets/{id}/status": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update ticket status",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ticket"
+                ],
+                "summary": "Update ticket status",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Ticket ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Ticket status",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.UpdateTicketStatusRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ticket status updated successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to update ticket status",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
-        "github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.Conversation": {
+        "handler.CreateTicketRequest": {
+            "type": "object",
+            "properties": {
+                "conv_id": {
+                    "type": "integer"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "priority": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.ReplyRequest": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.UpdateTicketStatusRequest": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Conversation": {
             "type": "object",
             "properties": {
                 "assigned_agent_id": {
@@ -275,7 +417,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.LoginRequest": {
+        "model.LoginRequest": {
             "type": "object",
             "properties": {
                 "email": {
@@ -286,7 +428,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.WebhookRequest": {
+        "model.WebhookRequest": {
             "type": "object",
             "properties": {
                 "external_id": {
@@ -297,14 +439,6 @@ const docTemplate = `{
                 },
                 "tenant_id": {
                     "type": "integer"
-                }
-            }
-        },
-        "internal_handler.ReplyRequest": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
                 }
             }
         }

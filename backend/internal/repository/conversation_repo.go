@@ -93,13 +93,22 @@ func (r *conversationRepo) Create(ctx context.Context, conv *model.Conversation)
 		VALUES (?, ?, ?)`
 
 	// execute the insert query
-	_, err := r.db.ExecContext(ctx, query,
+	result, err := r.db.ExecContext(ctx, query,
 		conv.TenantID,
 		conv.CustomerExternalID,
 		conv.Status,
 	)
+	if err != nil {
+		return err
+	}
 
-	return err
+	id, err := result.LastInsertId()
+	if err != nil {
+		return err
+	}
+
+	conv.ID = id
+	return nil
 }
 
 func (r *conversationRepo) GetByID(ctx context.Context, tenantID int64, id int64) (*model.Conversation, error) {

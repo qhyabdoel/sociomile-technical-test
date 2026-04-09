@@ -9,7 +9,7 @@ import (
 )
 
 type TicketRepository interface {
-	Create(ctx context.Context, ticket *model.Ticket) error
+	Create(ctx context.Context, ticket *model.Ticket) (*model.Ticket, error)
 	UpdateStatus(ctx context.Context, tenantID, ticketID int64, status string) error
 }
 
@@ -21,7 +21,7 @@ func NewTicketRepository(db *sql.DB) TicketRepository {
 	return &ticketRepository{db: db}
 }
 
-func (r *ticketRepository) Create(ctx context.Context, ticket *model.Ticket) error {
+func (r *ticketRepository) Create(ctx context.Context, ticket *model.Ticket) (*model.Ticket, error) {
 	query := `
 		INSERT INTO tickets (
 			tenant_id, conversation_id, title, description, 
@@ -30,7 +30,7 @@ func (r *ticketRepository) Create(ctx context.Context, ticket *model.Ticket) err
 			?, ?, ?, ?, ?, ?, ?, NOW()
 		)
 	`
-	_, err := r.db.ExecContext(ctx, query,
+	result, err := r.db.ExecContext(ctx, query,
 		ticket.TenantID,
 		ticket.ConversationID,
 		ticket.Title,
@@ -39,7 +39,17 @@ func (r *ticketRepository) Create(ctx context.Context, ticket *model.Ticket) err
 		ticket.Priority,
 		ticket.AssignedAgentID,
 	)
-	return err
+	if err != nil {
+		return nil, err
+	}
+
+	id, err := result.LastInsertId()
+	if err != nil {
+		return nil, err
+	}
+
+	ticket.ID = id
+	return ticket, nil
 }
 
 func (r *ticketRepository) UpdateStatus(ctx context.Context, tenantID, ticketID int64, status string) error {

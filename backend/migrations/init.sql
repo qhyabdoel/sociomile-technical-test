@@ -70,3 +70,4 @@ INSERT INTO users (tenant_id, name, email, password_hash, role) VALUES
 (1, 'Admin Sociomile', 'admin@sociomile.com', '$2a$10$hmz/Rc9jh44BYGZ5q4HALeh5y6ZRSkH5PpoRvrheQdR12QDqx.sfu', 'admin'),
 (1, 'Agent Kiki', 'agent@sociomile.com', '$2a$10$hmz/Rc9jh44BYGZ5q4HALeh5y6ZRSkH5PpoRvrheQdR12QDqx.sfu', 'agent'),
 (2, 'Agent Kiki', 'agent@tech.com', '$2a$10$hmz/Rc9jh44BYGZ5q4HALeh5y6ZRSkH5PpoRvrheQdR12QDqx.sfu', 'agent');
+(2, 'Admin Two', 'admin2@tech.com', '$2a$10$hmz/Rc9jh44BYGZ5q4HALeh5y6ZRSkH5PpoRvrheQdR12QDqx.sfu', 'admin');

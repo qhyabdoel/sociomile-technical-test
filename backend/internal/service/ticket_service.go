@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"github.com/qhyabdoel/sociomile-technical-test/backend/internal/model"
 	"github.com/qhyabdoel/sociomile-technical-test/backend/internal/repository"
@@ -38,11 +37,7 @@ func (s *TicketService) EscalateToTicket(ctx context.Context, tenantID, agentID,
 	}
 
 	// save ticket
-	if err := s.ticketRepo.Create(ctx, ticket); err != nil {
-		return nil, fmt.Errorf("Failed to escalate: conversation might already have ticket")
-	}
-
-	return ticket, nil
+	return s.ticketRepo.Create(ctx, ticket)
 }
 
 // update ticket status

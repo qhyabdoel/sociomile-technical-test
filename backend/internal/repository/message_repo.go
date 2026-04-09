@@ -23,7 +23,7 @@ func NewMessageRepository(db *sql.DB) MessageRepository {
 func (r *messageRepository) Create(ctx context.Context, msg *model.Message) error {
 	query := `
 		INSERT INTO messages (conversation_id, sender_type, message) 
-		VALUES ($1, $2, $3)
+		VALUES (?, ?, ?)
 	`
 	_, err := r.db.ExecContext(ctx, query, msg.ConversationID, msg.SenderType, msg.Message)
 	return err
@@ -33,7 +33,7 @@ func (r *messageRepository) GetByConversationID(ctx context.Context, conversatio
 	query := `
 		SELECT id, conversation_id, sender_type, message, created_at 
 		FROM messages 
-		WHERE conversation_id = $1 
+		WHERE conversation_id = ? 
 		ORDER BY created_at ASC
 	`
 	rows, err := r.db.QueryContext(ctx, query, conversationID)

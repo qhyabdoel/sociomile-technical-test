@@ -21,7 +21,11 @@ func NewTenantRepository(db *sql.DB) TenantRepository {
 
 func (r *tenantRepository) GetByID(ctx context.Context, id int64) (*model.Tenant, error) {
 	var tenant model.Tenant
-	if err := r.db.QueryRowContext(ctx, "SELECT * FROM tenants WHERE id = ?", id).Scan(&tenant.ID, &tenant.Name, &tenant.CreatedAt, &tenant.UpdatedAt); err != nil {
+	if err := r.db.QueryRowContext(ctx, "SELECT * FROM tenants WHERE id = ?", id).Scan(
+		&tenant.ID,
+		&tenant.Name,
+		&tenant.CreatedAt,
+	); err != nil {
 		return nil, err
 	}
 	return &tenant, nil
