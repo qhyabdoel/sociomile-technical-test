@@ -35,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.WebhookRequest"
+                            "$ref": "#/definitions/github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.WebhookRequest"
                         }
                     }
                 ],
@@ -63,6 +63,11 @@ const docTemplate = `{
         },
         "/conversations": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get conversations by tenant",
                 "produces": [
                     "application/json"
@@ -77,7 +82,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/model.Conversation"
+                                "$ref": "#/definitions/github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.Conversation"
                             }
                         }
                     },
@@ -92,6 +97,11 @@ const docTemplate = `{
         },
         "/conversations/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get conversation by ID",
                 "produces": [
                     "application/json"
@@ -114,7 +124,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.Conversation"
+                            "$ref": "#/definitions/github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.Conversation"
                         }
                     },
                     "400": {
@@ -134,6 +144,11 @@ const docTemplate = `{
         },
         "/conversations/{id}/messages": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Reply to conversation",
                 "consumes": [
                     "application/json"
@@ -160,7 +175,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.ReplyRequest"
+                            "$ref": "#/definitions/internal_handler.ReplyRequest"
                         }
                     }
                 ],
@@ -206,7 +221,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.LoginRequest"
+                            "$ref": "#/definitions/github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.LoginRequest"
                         }
                     }
                 ],
@@ -234,15 +249,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "handler.ReplyRequest": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "model.Conversation": {
+        "github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.Conversation": {
             "type": "object",
             "properties": {
                 "assigned_agent_id": {
@@ -268,7 +275,7 @@ const docTemplate = `{
                 }
             }
         },
-        "model.LoginRequest": {
+        "github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.LoginRequest": {
             "type": "object",
             "properties": {
                 "email": {
@@ -279,7 +286,7 @@ const docTemplate = `{
                 }
             }
         },
-        "model.WebhookRequest": {
+        "github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.WebhookRequest": {
             "type": "object",
             "properties": {
                 "external_id": {
@@ -290,6 +297,14 @@ const docTemplate = `{
                 },
                 "tenant_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "internal_handler.ReplyRequest": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
                 }
             }
         }

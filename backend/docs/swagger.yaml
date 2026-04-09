@@ -1,11 +1,6 @@
 basePath: /
 definitions:
-  handler.ReplyRequest:
-    properties:
-      message:
-        type: string
-    type: object
-  model.Conversation:
+  github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.Conversation:
     properties:
       assigned_agent_id:
         type: integer
@@ -22,14 +17,14 @@ definitions:
       updated_at:
         type: string
     type: object
-  model.LoginRequest:
+  github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.LoginRequest:
     properties:
       email:
         type: string
       password:
         type: string
     type: object
-  model.WebhookRequest:
+  github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.WebhookRequest:
     properties:
       external_id:
         type: string
@@ -37,6 +32,11 @@ definitions:
         type: string
       tenant_id:
         type: integer
+    type: object
+  internal_handler.ReplyRequest:
+    properties:
+      message:
+        type: string
     type: object
 host: localhost:8080
 info:
@@ -56,7 +56,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/model.WebhookRequest'
+          $ref: '#/definitions/github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.WebhookRequest'
       produces:
       - application/json
       responses:
@@ -85,12 +85,14 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/model.Conversation'
+              $ref: '#/definitions/github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.Conversation'
             type: array
         "500":
           description: Failed to get conversations
           schema:
             type: string
+      security:
+      - BearerAuth: []
       summary: Get conversations by tenant
       tags:
       - Conversation
@@ -110,7 +112,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.Conversation'
+            $ref: '#/definitions/github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.Conversation'
         "400":
           description: Invalid conversation ID
           schema:
@@ -119,6 +121,8 @@ paths:
           description: Failed to get conversation
           schema:
             type: string
+      security:
+      - BearerAuth: []
       summary: Get conversation by ID
       tags:
       - Conversation
@@ -139,7 +143,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/handler.ReplyRequest'
+          $ref: '#/definitions/internal_handler.ReplyRequest'
       produces:
       - application/json
       responses:
@@ -155,6 +159,8 @@ paths:
           description: Failed to reply
           schema:
             type: string
+      security:
+      - BearerAuth: []
       summary: Reply to conversation
       tags:
       - Conversation
@@ -169,7 +175,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/model.LoginRequest'
+          $ref: '#/definitions/github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.LoginRequest'
       produces:
       - application/json
       responses:

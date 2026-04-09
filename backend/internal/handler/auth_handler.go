@@ -42,10 +42,14 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		WriteError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
+	if user == nil {
+		WriteError(w, http.StatusUnauthorized, "User not found")
+		return
+	}
 
 	// check password
 	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(req.Password)); err != nil {
-		WriteError(w, http.StatusUnauthorized, "Invalid credentials")
+		WriteError(w, http.StatusUnauthorized, "Wrong password")
 		return
 	}
 

@@ -29,7 +29,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.WebhookRequest"
+                            "$ref": "#/definitions/github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.WebhookRequest"
                         }
                     }
                 ],
@@ -57,6 +57,11 @@
         },
         "/conversations": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get conversations by tenant",
                 "produces": [
                     "application/json"
@@ -71,7 +76,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/model.Conversation"
+                                "$ref": "#/definitions/github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.Conversation"
                             }
                         }
                     },
@@ -86,6 +91,11 @@
         },
         "/conversations/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get conversation by ID",
                 "produces": [
                     "application/json"
@@ -108,7 +118,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.Conversation"
+                            "$ref": "#/definitions/github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.Conversation"
                         }
                     },
                     "400": {
@@ -128,6 +138,11 @@
         },
         "/conversations/{id}/messages": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Reply to conversation",
                 "consumes": [
                     "application/json"
@@ -154,7 +169,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.ReplyRequest"
+                            "$ref": "#/definitions/internal_handler.ReplyRequest"
                         }
                     }
                 ],
@@ -200,7 +215,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.LoginRequest"
+                            "$ref": "#/definitions/github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.LoginRequest"
                         }
                     }
                 ],
@@ -228,15 +243,7 @@
         }
     },
     "definitions": {
-        "handler.ReplyRequest": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "model.Conversation": {
+        "github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.Conversation": {
             "type": "object",
             "properties": {
                 "assigned_agent_id": {
@@ -262,7 +269,7 @@
                 }
             }
         },
-        "model.LoginRequest": {
+        "github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.LoginRequest": {
             "type": "object",
             "properties": {
                 "email": {
@@ -273,7 +280,7 @@
                 }
             }
         },
-        "model.WebhookRequest": {
+        "github_com_qhyabdoel_sociomile-technical-test_backend_internal_model.WebhookRequest": {
             "type": "object",
             "properties": {
                 "external_id": {
@@ -284,6 +291,14 @@
                 },
                 "tenant_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "internal_handler.ReplyRequest": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
                 }
             }
         }

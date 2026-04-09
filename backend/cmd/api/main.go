@@ -14,6 +14,8 @@ import (
 
 	_ "github.com/qhyabdoel/sociomile-technical-test/backend/docs"
 	httpSwagger "github.com/swaggo/http-swagger"
+
+	"github.com/go-chi/cors"
 )
 
 // @title           Sociomile Technical Test API
@@ -50,6 +52,13 @@ func main() {
 
 	// setup router
 	r := chi.NewRouter()
+	r.Use(cors.Handler(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:8080", "http://127.0.0.1:8080"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		AllowCredentials: true,
+		MaxAge:           300,
+	}))
 
 	// public routes
 	r.Post("/channel/webhook", convHandler.HandleWebhook)

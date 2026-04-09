@@ -66,7 +66,7 @@ INSERT INTO tenants (name) VALUES
 
 -- seed users
 -- password is "password123"
-INSERT INTO users (id, tenant_id, name, email, password_hash, role) VALUES 
-('admin-1', 1, 'Admin Sociomile', 'admin@sociomile.com', '$2a$10$ByI67Zgh.94.C8B/JtO.OuefN7dF3FjN/965B.35pYdJb6K4B5eC.', 'admin'),
-('agent-1', 1, 'Agent Kiki', 'agent@sociomile.com', '$2a$10$ByI67Zgh.94.C8B/JtO.OuefN7dF3FjN/965B.35pYdJb6K4B5eC.', 'agent'),
-('agent-2', 2, 'Agent Kiki', 'agent@tech.com', '$2a$10$ByI67Zgh.94.C8B/JtO.OuefN7dF3FjN/965B.35pYdJb6K4B5eC.', 'agent');
+INSERT INTO users (tenant_id, name, email, password_hash, role) VALUES 
+(1, 'Admin Sociomile', 'admin@sociomile.com', '$2a$10$hmz/Rc9jh44BYGZ5q4HALeh5y6ZRSkH5PpoRvrheQdR12QDqx.sfu', 'admin'),
+(1, 'Agent Kiki', 'agent@sociomile.com', '$2a$10$hmz/Rc9jh44BYGZ5q4HALeh5y6ZRSkH5PpoRvrheQdR12QDqx.sfu', 'agent'),
+(2, 'Agent Kiki', 'agent@tech.com', '$2a$10$hmz/Rc9jh44BYGZ5q4HALeh5y6ZRSkH5PpoRvrheQdR12QDqx.sfu', 'agent');

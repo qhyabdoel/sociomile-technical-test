@@ -21,7 +21,7 @@ func NewUserRepository(db *sql.DB) UserRepository {
 
 func (r *userRepo) FindByEmail(ctx context.Context, email string) (*model.User, error) {
 	query := `
-		SELECT id, tenant_id, name, email, password, role, created_at 
+		SELECT id, tenant_id, name, email, password_hash, role, created_at 
 		FROM users 
 		WHERE email = ?`
 
@@ -29,6 +29,8 @@ func (r *userRepo) FindByEmail(ctx context.Context, email string) (*model.User, 
 
 	err := r.db.QueryRowContext(ctx, query, email).Scan(
 		&user.ID,
+		&user.TenantID,
+		&user.Name,
 		&user.Email,
 		&user.PasswordHash,
 		&user.Role,

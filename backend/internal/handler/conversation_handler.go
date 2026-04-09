@@ -49,6 +49,7 @@ func (h *ConversationHandler) HandleWebhook(w http.ResponseWriter, r *http.Reque
 // @Summary Get conversations by tenant
 // @Description Get conversations by tenant
 // @Tags Conversation
+// @Security BearerAuth
 // @Produce json
 // @Success 200 {array} model.Conversation
 // @Failure 500 {string} string "Failed to get conversations"
@@ -71,6 +72,7 @@ type ReplyRequest struct {
 // @Summary Reply to conversation
 // @Description Reply to conversation
 // @Tags Conversation
+// @Security BearerAuth
 // @Accept json
 // @Produce json
 // @Param id path int64 true "Conversation ID"
@@ -106,6 +108,7 @@ func (h *ConversationHandler) Reply(w http.ResponseWriter, r *http.Request) {
 // @Summary Get conversation by ID
 // @Description Get conversation by ID
 // @Tags Conversation
+// @Security BearerAuth
 // @Produce json
 // @Param id path int64 true "Conversation ID"
 // @Success 200 {object} model.Conversation
