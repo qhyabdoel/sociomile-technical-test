@@ -1,12 +1,12 @@
--- Tenants: Companie or Organizations
-CREATE TABLE tenants (
+-- create tenants if not exist
+CREATE TABLE IF NOT EXISTS tenants (
     id BiGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 )
 
--- Users: Admins and Agents
-CREATE TABLE users (
+-- create users if not exist
+CREATE TABLE IF NOT EXISTS users (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     tenant_id BIGINT NOT NULL,
     name VARCHAR(255) NOT NULL,
@@ -18,8 +18,8 @@ CREATE TABLE users (
     INDEX idx_tenant_id (tenant_id)
 )
 
--- Conversations
-CREATE TABLE conversations (
+-- create conversations if not exist
+CREATE TABLE IF NOT EXISTS conversations (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     tenant_id BIGINT NOT NULL,
     customer_external_id VARCHAR(255) NOT NULL,
@@ -31,8 +31,8 @@ CREATE TABLE conversations (
     FOREIGN KEY (assigned_agent_id) REFERENCES users(id),
 )
 
--- Messages
-CREATE TABLE messages (
+-- create messages if not exist
+CREATE TABLE IF NOT EXISTS messages (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     conversation_id BIGINT NOT NULL,
     sender_type ENUM('customer', 'agent') NOT NULL,
@@ -42,8 +42,8 @@ CREATE TABLE messages (
     INDEX idx_conversation_id (conversation_id)
 )
 
--- Tickets
-CREATE TABLE tickets (
+-- create tickets if not exist
+CREATE TABLE IF NOT EXISTS tickets (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     tenant_id BIGINT NOT NULL,
     conversation_id BIGINT NOT NULL,

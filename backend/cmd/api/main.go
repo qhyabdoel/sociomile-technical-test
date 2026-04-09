@@ -10,8 +10,19 @@ import (
 	"github.com/qhyabdoel/sociomile-technical-test/backend/internal/middleware"
 	"github.com/qhyabdoel/sociomile-technical-test/backend/internal/repository"
 	"github.com/qhyabdoel/sociomile-technical-test/backend/internal/service"
+
+	_ "github.com/qhyabdoel/sociomile-technical-test/backend/docs"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
+// @title           Sociomile Technical Test API
+// @version         1.0
+// @description     API for multi-tenant conversation and ticketing system.
+// @host            localhost:8080
+// @BasePath        /
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 func main() {
 	// init db and repositories
 	db, err := config.InitDB()
@@ -21,12 +32,16 @@ func main() {
 	defer db.Close()
 
 	convRepo := repository.NewConversationRepository(db)
+	msgRepo := repository.NewMessageRepository(db)
+	ticketRepo := repository.NewTicketRepository(db)
 
 	// init services
-	convService := service.NewConversationService(convRepo)
+	convService := service.NewConversationService(convRepo, msgRepo)
+	ticketService := service.NewTicketService(ticketRepo, convRepo)
 
 	// init handlers
 	convHandler := handler.NewConversationHandler(convService)
+	ticketHandler := handler.NewTicketHandler(ticketService)
 
 	// setup router
 	r := chi.NewRouter()
@@ -43,12 +58,21 @@ func main() {
 		r.Get("/conversations/{id}", convHandler.GetDetail)
 		r.Post("/conversations/{id}/messages", convHandler.Reply)
 
-		// Ticket Routes (Hanya Admin) [cite: 80, 95]
+		// ticket routes
+
+		// agent and admin can create ticket
+		r.Post("/tickets", ticketHandler.Create)
+
+		// only admin can update status
 		r.Group(func(r chi.Router) {
 			r.Use(middleware.RoleMiddleware("admin"))
 			r.Patch("/tickets/{id}/status", ticketHandler.UpdateStatus)
 		})
 	})
+
+	r.Get("/swagger/*", httpSwagger.Handler(
+		httpSwagger.URL("/swagger/doc.json"),
+	))
 
 	http.ListenAndServe(":8080", r)
 }

@@ -10,6 +10,6 @@ type Ticket struct {
 	Description     string    `json:"description"`
 	Status          string    `json:"status"`                      // "open", "pending", "closed"
 	Priority        string    `json:"priority"`                    // "low", "medium", "high"
-	AssignedAgentID *int      `json:"assigned_agent_id,omitempty"` // nullable
+	AssignedAgentID *int64    `json:"assigned_agent_id,omitempty"` // nullable
 	CreatedAt       time.Time `json:"created_at"`
 }

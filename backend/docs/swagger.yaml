@@ -1,0 +1,159 @@
+basePath: /
+definitions:
+  handler.ReplyRequest:
+    properties:
+      message:
+        type: string
+    type: object
+  model.Conversation:
+    properties:
+      assigned_agent_id:
+        type: integer
+      created_at:
+        type: string
+      customer_external_id:
+        type: string
+      id:
+        type: integer
+      status:
+        type: string
+      tenant_id:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  model.WebhookRequest:
+    properties:
+      external_id:
+        type: string
+      message:
+        type: string
+      tenant_id:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API for multi-tenant conversation and ticketing system.
+  title: Sociomile Technical Test API
+  version: "1.0"
+paths:
+  /channel/webhook:
+    post:
+      consumes:
+      - application/json
+      description: Handle incoming webhook from channel
+      parameters:
+      - description: Webhook request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.WebhookRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Message processed successfully
+          schema:
+            type: string
+        "400":
+          description: Invalid request body
+          schema:
+            type: string
+        "500":
+          description: Failed to process message
+          schema:
+            type: string
+      summary: Handle incoming webhook
+      tags:
+      - Conversation
+  /conversations:
+    get:
+      description: Get conversations by tenant
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Conversation'
+            type: array
+        "500":
+          description: Failed to get conversations
+          schema:
+            type: string
+      summary: Get conversations by tenant
+      tags:
+      - Conversation
+  /conversations/{id}:
+    get:
+      description: Get conversation by ID
+      parameters:
+      - description: Conversation ID
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Conversation'
+        "400":
+          description: Invalid conversation ID
+          schema:
+            type: string
+        "500":
+          description: Failed to get conversation
+          schema:
+            type: string
+      summary: Get conversation by ID
+      tags:
+      - Conversation
+  /conversations/{id}/messages:
+    post:
+      consumes:
+      - application/json
+      description: Reply to conversation
+      parameters:
+      - description: Conversation ID
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Message
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/handler.ReplyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Reply sent
+          schema:
+            type: string
+        "400":
+          description: Invalid conversation ID
+          schema:
+            type: string
+        "500":
+          description: Failed to reply
+          schema:
+            type: string
+      summary: Reply to conversation
+      tags:
+      - Conversation
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

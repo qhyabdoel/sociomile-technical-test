@@ -19,6 +19,16 @@ func NewConversationHandler(svc *service.ConversationService) *ConversationHandl
 	return &ConversationHandler{svc: svc}
 }
 
+// @Summary Handle incoming webhook
+// @Description Handle incoming webhook from channel
+// @Tags Conversation
+// @Accept json
+// @Produce json
+// @Param body body model.WebhookRequest true "Webhook request"
+// @Success 200 {string} string "Message processed successfully"
+// @Failure 400 {string} string "Invalid request body"
+// @Failure 500 {string} string "Failed to process message"
+// @Router /channel/webhook [post]
 func (h *ConversationHandler) HandleWebhook(w http.ResponseWriter, r *http.Request) {
 	var req model.WebhookRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -36,14 +46,15 @@ func (h *ConversationHandler) HandleWebhook(w http.ResponseWriter, r *http.Reque
 	WriteJSON(w, http.StatusOK, "Message processed successfully")
 }
 
+// @Summary Get conversations by tenant
+// @Description Get conversations by tenant
+// @Tags Conversation
+// @Produce json
+// @Success 200 {array} model.Conversation
+// @Failure 500 {string} string "Failed to get conversations"
+// @Router /conversations [get]
 func (h *ConversationHandler) List(w http.ResponseWriter, r *http.Request) {
-	tenantIDStr, _ := r.Context().Value(middleware.TenantIDKey).(string)
-	tenantID, err := strconv.ParseInt(tenantIDStr, 10, 64)
-	if err != nil {
-		WriteError(w, http.StatusBadRequest, "Invalid tenant ID")
-		return
-	}
-
+	tenantID, _ := r.Context().Value(middleware.TenantIDKey).(int64)
 	conversations, err := h.svc.GetConversationsByTenant(r.Context(), tenantID)
 	if err != nil {
 		WriteError(w, http.StatusInternalServerError, "Failed to get conversations")
@@ -53,7 +64,21 @@ func (h *ConversationHandler) List(w http.ResponseWriter, r *http.Request) {
 	WriteJSON(w, http.StatusOK, conversations)
 }
 
-// reply used by agent to reply message
+type ReplyRequest struct {
+	Message string `json:"message"`
+}
+
+// @Summary Reply to conversation
+// @Description Reply to conversation
+// @Tags Conversation
+// @Accept json
+// @Produce json
+// @Param id path int64 true "Conversation ID"
+// @Param body body handler.ReplyRequest true "Message"
+// @Success 200 {string} string "Reply sent"
+// @Failure 400 {string} string "Invalid conversation ID"
+// @Failure 500 {string} string "Failed to reply"
+// @Router /conversations/{id}/messages [post]
 func (h *ConversationHandler) Reply(w http.ResponseWriter, r *http.Request) {
 	paramID := chi.URLParam(r, "id")
 	convID, err := strconv.ParseInt(paramID, 10, 64)
@@ -61,16 +86,9 @@ func (h *ConversationHandler) Reply(w http.ResponseWriter, r *http.Request) {
 		WriteError(w, http.StatusBadRequest, "Invalid conversation ID")
 		return
 	}
-	tenantIDStr, _ := r.Context().Value(middleware.TenantIDKey).(string)
-	tenantID, err := strconv.ParseInt(tenantIDStr, 10, 64)
-	if err != nil {
-		WriteError(w, http.StatusBadRequest, "Invalid tenant ID")
-		return
-	}
+	tenantID, _ := r.Context().Value(middleware.TenantIDKey).(int64)
 
-	var req struct {
-		Message string `json:"message"`
-	}
+	var req ReplyRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		WriteError(w, http.StatusBadRequest, "Invalid message")
 		return
@@ -85,22 +103,26 @@ func (h *ConversationHandler) Reply(w http.ResponseWriter, r *http.Request) {
 	WriteJSON(w, http.StatusCreated, "Reply sent")
 }
 
+// @Summary Get conversation by ID
+// @Description Get conversation by ID
+// @Tags Conversation
+// @Produce json
+// @Param id path int64 true "Conversation ID"
+// @Success 200 {object} model.Conversation
+// @Failure 400 {string} string "Invalid conversation ID"
+// @Failure 500 {string} string "Failed to get conversation"
+// @Router /conversations/{id} [get]
 func (h *ConversationHandler) GetDetail(w http.ResponseWriter, r *http.Request) {
 	// parse id from url
-	iDStr := chi.URLParam(r, "id")
-	convID, err := strconv.ParseInt(iDStr, 10, 64)
+	paramID := chi.URLParam(r, "id")
+	convID, err := strconv.ParseInt(paramID, 10, 64)
 	if err != nil {
 		WriteError(w, http.StatusBadRequest, "Invalid conversation ID")
 		return
 	}
 
 	// get tenant id from context
-	tenantIdStr, _ := r.Context().Value(middleware.TenantIDKey).(string)
-	tenantId, err := strconv.ParseInt(tenantIdStr, 10, 64)
-	if err != nil {
-		WriteError(w, http.StatusBadRequest, "Invalid tenant ID")
-		return
-	}
+	tenantId, _ := r.Context().Value(middleware.TenantIDKey).(int64)
 
 	// get conversation by id
 	detail, err := h.svc.GetConversationByID(r.Context(), tenantId, convID)
