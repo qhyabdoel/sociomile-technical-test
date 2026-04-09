@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/qhyabdoel/sociomile-technical-test/backend/internal/config"
@@ -35,12 +36,15 @@ func main() {
 	msgRepo := repository.NewMessageRepository(db)
 	ticketRepo := repository.NewTicketRepository(db)
 	tenantRepo := repository.NewTenantRepository(db)
+	userRepo := repository.NewUserRepository(db)
 
 	// init services
 	convService := service.NewConversationService(convRepo, msgRepo, tenantRepo)
 	ticketService := service.NewTicketService(ticketRepo, convRepo)
 
 	// init handlers
+	jwtSecret := os.Getenv("JWT_SECRET")
+	authHandler := handler.NewAuthHandler(userRepo, jwtSecret)
 	convHandler := handler.NewConversationHandler(convService)
 	ticketHandler := handler.NewTicketHandler(ticketService)
 
@@ -49,10 +53,11 @@ func main() {
 
 	// public routes
 	r.Post("/channel/webhook", convHandler.HandleWebhook)
+	r.Post("/login", authHandler.Login)
 
 	// protected routes
 	r.Group(func(r chi.Router) {
-		r.Use(middleware.AuthMiddleware("your-secret-key"))
+		r.Use(middleware.AuthMiddleware(jwtSecret))
 
 		// conversations routes
 		r.Get("/conversations", convHandler.List)
