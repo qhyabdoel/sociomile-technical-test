@@ -79,7 +79,7 @@ const Chat = () => {
   const { conversation, messages } = data;
 
   return (
-    <div className="flex-1 flex overflow-hidden">
+    <div className="flex-1 flex overflow-hidden space-y-8">
       {/* Chat Area */}
       <div className="flex-1 flex flex-col bg-bg-dark" style={{ borderRight: '1px solid var(--border)' }}>
         {/* Header */}
@@ -93,8 +93,8 @@ const Chat = () => {
               <span className="text-xs text-success" style={{ color: 'var(--success)' }}>Active Chat</span>
             </div>
           </div>
-          <button 
-            className="flex items-center gap-2 px-3 py-1.5 glass text-xs font-semibold hover:bg-primary/20 transition-colors"
+          <button
+            className="flex items-center gap-2 px-3 py-1.5 text-xs text-white mb-32"
             onClick={() => setShowEscalate(!showEscalate)}
           >
             <Ticket size={14} /> {showEscalate ? 'Close Escalation' : 'Escalate to Ticket'}
@@ -102,20 +102,19 @@ const Chat = () => {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        <div className="flex-1 overflow-y-auto p-6 space-y-6 mt-8">
           {messages.map((msg) => (
-            <div 
-              key={msg.id} 
+            <div
+              key={msg.id}
               className={`flex flex-col ${msg.sender_type === 'agent' ? 'items-end' : 'items-start'}`}
               style={{ marginBottom: '24px' }}
             >
-              <div 
-                className={`p-4 max-w-[70%] rounded-2xl ${
-                  msg.sender_type === 'agent' 
-                    ? 'bg-primary text-white rounded-tr-none' 
-                    : 'glass rounded-tl-none'
-                }`}
-                style={{ 
+              <div
+                className={`p-4 max-w-[70%] rounded-2xl ${msg.sender_type === 'agent'
+                  ? 'bg-primary text-white rounded-tr-none'
+                  : 'glass rounded-tl-none'
+                  }`}
+                style={{
                   backgroundColor: msg.sender_type === 'agent' ? 'var(--primary)' : 'rgba(255,255,255,0.05)',
                   animation: 'fadeIn 0.2s ease-out'
                 }}
@@ -139,8 +138,8 @@ const Chat = () => {
               onChange={(e) => setReply(e.target.value)}
               className="flex-1"
             />
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="primary p-3 flex items-center justify-center rounded-xl"
               disabled={sending || !reply.trim()}
             >
@@ -157,25 +156,25 @@ const Chat = () => {
             <Ticket size={24} />
             <h2 style={{ fontSize: '20px', fontWeight: '700' }}>Escalate Ticket</h2>
           </div>
-          
+
           <form onSubmit={handleEscalate} className="space-y-6">
             <div style={{ marginBottom: '16px' }}>
               <label className="block text-xs font-semibold mb-2 uppercase opacity-50">Ticket Title</label>
-              <input 
-                placeholder="Issue with login..." 
+              <input
+                placeholder="Issue with login..."
                 required
                 value={ticketData.title}
-                onChange={(e) => setTicketData({...ticketData, title: e.target.value})}
+                onChange={(e) => setTicketData({ ...ticketData, title: e.target.value })}
               />
             </div>
-            
+
             <div style={{ marginBottom: '16px' }}>
               <label className="block text-xs font-semibold mb-2 uppercase opacity-50">Priority</label>
-              <select 
+              <select
                 className="w-full bg-bg-input border border-border p-3 rounded-lg text-white"
                 style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)', color: 'white', padding: '12px' }}
                 value={ticketData.priority}
-                onChange={(e) => setTicketData({...ticketData, priority: e.target.value})}
+                onChange={(e) => setTicketData({ ...ticketData, priority: e.target.value })}
               >
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
@@ -186,13 +185,13 @@ const Chat = () => {
 
             <div style={{ marginBottom: '24px' }}>
               <label className="block text-xs font-semibold mb-2 uppercase opacity-50">Description</label>
-              <textarea 
+              <textarea
                 className="w-full bg-bg-input border border-border p-3 rounded-lg text-white min-h-[120px]"
                 style={{ backgroundColor: 'var(--bg-input)', border: '1px solid var(--border)', color: 'white', padding: '12px', minHeight: '120px' }}
                 placeholder="Details about the escalation..."
                 required
                 value={ticketData.desc}
-                onChange={(e) => setTicketData({...ticketData, desc: e.target.value})}
+                onChange={(e) => setTicketData({ ...ticketData, desc: e.target.value })}
               />
             </div>
 
