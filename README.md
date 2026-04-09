@@ -2,7 +2,7 @@
 
 This project is a multi-tenant conversation and ticketing system.
 
-## 🚀 How to Run the Full Stack (Recommended)
+## How to Run the Full Stack (Recommended)
 
 The easiest way to run the entire application (Database, Backend, and Frontend) is using Docker Compose.
 
@@ -19,7 +19,7 @@ The easiest way to run the entire application (Database, Backend, and Frontend) 
 ---
 
 
-## 🔑 Default Credentials (Seeded)
+## Default Credentials (Seeded)
 
 - **Tenant 1 (Sociomile Enterprise)**
   - Admin: `admin@sociomile.com` / `password123`
@@ -27,6 +27,9 @@ The easiest way to run the entire application (Database, Backend, and Frontend) 
 - **Tenant 2 (Kiki Tech Solutions)**
   - Admin: `admin2@tech.com` / `password123`
   - Agent: `agent@tech.com` / `password123`
+
+---
+
 
 ## Not yet implemented
 
