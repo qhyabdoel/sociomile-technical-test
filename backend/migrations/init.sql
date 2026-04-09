@@ -58,3 +58,15 @@ CREATE TABLE IF NOT EXISTS tickets (
     FOREIGN KEY (assigned_agent_id) REFERENCES users(id),
     INDEX idx_tenant_id (tenant_id)
 );
+
+-- seed tenants
+INSERT INTO tenants (name) VALUES 
+('Sociomile Enterprise'),
+('Kiki Tech Solutions');
+
+-- seed users
+-- password is "password123"
+INSERT INTO users (id, tenant_id, name, email, password_hash, role) VALUES 
+('admin-1', 1, 'Admin Sociomile', 'admin@sociomile.com', '$2a$10$ByI67Zgh.94.C8B/JtO.OuefN7dF3FjN/965B.35pYdJb6K4B5eC.', 'admin'),
+('agent-1', 1, 'Agent Kiki', 'agent@sociomile.com', '$2a$10$ByI67Zgh.94.C8B/JtO.OuefN7dF3FjN/965B.35pYdJb6K4B5eC.', 'agent'),
+('agent-2', 2, 'Agent Kiki', 'agent@tech.com', '$2a$10$ByI67Zgh.94.C8B/JtO.OuefN7dF3FjN/965B.35pYdJb6K4B5eC.', 'agent');
